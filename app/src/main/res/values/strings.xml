@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Ma réu</string>
+    <string name="action_filter">Salle</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="horaire">Horaire</string>
+    <string name="reset">Reset</string>
+    <string name="participants">Participants</string>
+
+    <string-array name="room_array">
+        <item>Réunion 1</item>
+        <item>Réunion 2</item>
+        <item>Réunion 3</item>
+        <item>Réunion 4</item>
+        <item>Réunion 5</item>
+        <item>Réunion 6</item>
+        <item>Réunion 7</item>
+        <item>Réunion 8</item>
+        <item>Réunion 9</item>
+        <item>Réunion 10</item>
+    </string-array>
+
+    <string-array name="guests_array">
+        <item>francis@lamzone.com</item>
+        <item>alexandra@lamzone.com</item>
+        <item>corentin@lamzone.com</item>
+        <item>fabien@lamzone.com</item>
+        <item>julie@lamzone.com</item>
+        <item>martine@lamzone.com</item>
+        <item>eric@lamzone.com</item>
+        <item>michel@lamzone.com</item>
+        <item>karen@lamzone.com</item>
+        <item>ludovic@lamzone.com</item>
+        <item>florence@lamzone.com</item>
+        <item>bernard@lamzone.com</item>
+        <item>thierry@lamzone.com</item>
+        <item>jeanmarc@lamzone.com</item>
+        <item>emmanuelle@lamzone.com</item>
+        <item>laura@lamzone.com</item>
+        <item>théo@lamzone.com</item>
+        <item>emma@lamzone.com</item>
+        <item>madelyn@lamzone.com</item>
+        <item>pauline@lamzone.com</item>
+        <item>arthur@lamzone.com</item>
+        <item>anna@lamzone.com</item>
+        <item>evie@lamzone.com</item>
+        <item>hannah@lamzone.com</item>
+        <item>dennis@lamzone.com</item>
+        <item>richard@lamzone.com</item>
+        <item>adrien@lamzone.com</item>
+        <item>nathan@lamzone.com</item>
+        <item>chloe@lamzone.com</item>
+        <item>elisa@lamzone.com</item>
+        <item>elea@lamzone.com</item>
+        <item>romain@lamzone.com</item>
+    </string-array>
+
+</resources>
