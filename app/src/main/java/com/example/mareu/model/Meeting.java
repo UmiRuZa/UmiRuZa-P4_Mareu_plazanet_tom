@@ -4,15 +4,15 @@ public class Meeting {
 
     private String room;
     private String time;
-    private String subject;
+    private String topic;
     private String guests;
     private int colorTint;
 
-    public Meeting(String room, String time,String subject, String guests, int colorTint) {
+    public Meeting(String room, String time,String topic, String guests, int colorTint) {
 
         this.room = room;
         this.time = time;
-        this.subject = subject;
+        this.topic = topic;
         this.guests = guests;
         this.colorTint = colorTint;
     }
@@ -21,7 +21,7 @@ public class Meeting {
 
     public String getTime() {return time;}
 
-    public String getSubject() {return subject;}
+    public String getTopic() {return topic;}
 
     public String getGuests() {return guests;}
 

@@ -40,7 +40,7 @@ public class AddMeetingActivity extends AppCompatActivity {
     TimePickerDialog picker;
     EditText eText;
 
-    TextInputLayout subject;
+    TextInputLayout topic;
 
     TextView room;
     Dialog dialogRoom;
@@ -63,7 +63,7 @@ public class AddMeetingActivity extends AppCompatActivity {
         getGuests();
         getTime();
         setMeetingInfo();
-        subject = findViewById(R.id.subjectLyt);
+        topic = findViewById(R.id.topicLyt);
         mMeetingApiService = DI.getMeetingApiService();
     }
 
@@ -245,7 +245,7 @@ public class AddMeetingActivity extends AppCompatActivity {
                 Meeting meeting = new Meeting(
                         room.getText().toString(),
                         eText.getText().toString(),
-                        subject.getEditText().getText().toString(),
+                        topic.getEditText().getText().toString(),
                         guests.getText().toString(),
                         color
                 );

@@ -22,8 +22,6 @@ import java.util.List;
 public class MeetingRecyclerViewAdapter extends RecyclerView.Adapter<MeetingRecyclerViewAdapter.ViewHolder> {
 
     List<Meeting> mMeetingsFinal;
-    List<Meeting> filterList;
-    private Object MeetingRecyclerViewAdapter;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView meetingInfo;
@@ -76,7 +74,7 @@ public class MeetingRecyclerViewAdapter extends RecyclerView.Adapter<MeetingRecy
         Meeting meeting = mMeetingsFinal.get(position);
 
         TextView textView = holder.meetingInfo;
-        textView.setText(meeting.getRoom() + "-" + meeting.getTime() + "-" + meeting.getSubject());
+        textView.setText(meeting.getRoom() + "-" + meeting.getTime() + "-" + meeting.getTopic());
         TextView textView1 = holder.guestsInfo;
         textView1.setText(meeting.getGuests());
         ImageView imageView = holder.roomColor;

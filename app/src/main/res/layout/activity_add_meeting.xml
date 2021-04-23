@@ -44,14 +44,14 @@
                 android:hint="Heure de la réunion" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/subjectLyt"
+                android:id="@+id/topicLyt"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/subjectMeeting"
+                    android:id="@+id/topicMeeting"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:hint="Sujet de la réunion"

@@ -76,7 +76,7 @@ public class MareuInstrumentedTest {
         onView(withId(R.id.editText1)).perform(click());
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(12, 30));
         onView(withText("OK")).perform(click());
-        onView(withId(R.id.subjectMeeting)).perform(typeText("Peach"));
+        onView(withId(R.id.topicMeeting)).perform(typeText("Peach"));
         onView(withId(R.id.textViewGuests)).perform(click());
         onView(withText("francis@lamzone.com")).perform(click());
         onView(withId(R.id.select_button)).perform(click());
