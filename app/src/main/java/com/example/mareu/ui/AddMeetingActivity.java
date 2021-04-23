@@ -39,14 +39,18 @@ public class AddMeetingActivity extends AppCompatActivity {
 
     TimePickerDialog picker;
     EditText eText;
-    TextView room;
-    TextView guests;
+
     TextInputLayout subject;
+
+    TextView room;
     Dialog dialogRoom;
-    Dialog dialogGuests;
     ImageView colorImageView;
     int color;
+
+    TextView guests;
+    Dialog dialogGuests;
     ArrayList<String> guestsList = new ArrayList<>();
+
     private MeetingApiService mMeetingApiService;
 
     @Override
@@ -58,7 +62,7 @@ public class AddMeetingActivity extends AppCompatActivity {
         getRoom();
         getGuests();
         getTime();
-        getMeetingInfo();
+        setMeetingInfo();
         subject = findViewById(R.id.subjectLyt);
         mMeetingApiService = DI.getMeetingApiService();
     }
@@ -233,7 +237,7 @@ public class AddMeetingActivity extends AppCompatActivity {
         });
     }
 
-    public void getMeetingInfo() {
+    public void setMeetingInfo() {
         final MaterialButton addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
