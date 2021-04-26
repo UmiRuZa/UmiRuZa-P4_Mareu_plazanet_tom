@@ -249,7 +249,6 @@ public class AddMeetingActivity extends AppCompatActivity {
                         guests.getText().toString(),
                         color
                 );
-                Log.d("Value", String.valueOf(color));
                 mMeetingApiService.createMeeting(meeting);
                 finish();
             }
