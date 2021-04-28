@@ -13,6 +13,7 @@ public class DummyMeetingApiService implements MeetingApiService{
     List<Meeting> filterList = new ArrayList<>();
 
     boolean filterEmpty;
+    boolean meetingRoomTaken;
 
     @Override
     public List<Meeting> getMeeting() {
@@ -80,4 +81,25 @@ public class DummyMeetingApiService implements MeetingApiService{
 
     @Override
     public Boolean getFilterIsEmpty() { return filterEmpty; }
+
+    @Override
+    public void setMeetingRoomTaken(String roomTaken, String time, String date) {
+        boolean hasRun = false;
+
+        for (Meeting meeting : mMeetings) {
+            if (roomTaken.equalsIgnoreCase(meeting.getRoom()) && time.equalsIgnoreCase(meeting.getTime()) && date.equalsIgnoreCase(meeting.getDate())) {
+                meetingRoomTaken = true;
+                hasRun = true;
+            } else {
+                if (!hasRun){
+                    meetingRoomTaken = false;
+                }
+            }
+        }
+    }
+
+    @Override
+    public Boolean meetingRoomCheck() {
+        return meetingRoomTaken;
+    }
 }

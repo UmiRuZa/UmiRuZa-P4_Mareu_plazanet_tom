@@ -25,4 +25,8 @@ public interface MeetingApiService {
     void filterDate(String date, String time);
 
     Boolean getFilterIsEmpty();
+
+    void setMeetingRoomTaken(String roomTaken, String date, String time);
+
+    Boolean meetingRoomCheck();
 }

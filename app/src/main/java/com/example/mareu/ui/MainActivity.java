@@ -7,12 +7,12 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.mareu.DI.DI;
-import com.example.mareu.model.Meeting;
-import com.example.mareu.service.MeetingApiService;
-import com.example.mareu.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,13 +20,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
-import android.widget.Toast;
+import com.example.mareu.DI.DI;
+import com.example.mareu.R;
+import com.example.mareu.model.Meeting;
+import com.example.mareu.service.MeetingApiService;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,8 +73,7 @@ public class MainActivity extends AppCompatActivity{
             mMeetingsFinal = mMeetings;
         } else if (filterList.isEmpty() && filterEmpty){
             mMeetingsFinal = filterList;
-            int i = 10;
-            Toast.makeText(MainActivity.this, "Aucune réunion ne correspond a votre filtre", i).show();
+            Toast.makeText(MainActivity.this, "Aucune réunion ne correspond a votre filtre", 10).show();
         } else {
             mMeetingsFinal = filterList;
         }
@@ -90,6 +87,7 @@ public class MainActivity extends AppCompatActivity{
     public void onResume(){
         super.onResume();
 
+        mMeetingApiService.setMeetingRoomTaken("", "", "");
         initList();
     }
 

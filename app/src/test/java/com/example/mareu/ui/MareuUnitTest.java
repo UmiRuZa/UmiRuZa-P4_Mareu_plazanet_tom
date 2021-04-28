@@ -37,14 +37,24 @@ public class MareuUnitTest {
     }
 
     @Test
-    public void c_deleteMeetingWithSuccess() {
+    public void c_createMeetingOverlapWithSuccess() {
+        Meeting meetingToOverlap = new Meeting("Réunion 1", "09:30", "6/4/2021", "Luigi", "bernard@lamzone.com", 2131099862);
+        mMeetingApiService.setMeetingRoomTaken("Réunion 1", "09:30","6/4/2021");
+        if (!mMeetingApiService.meetingRoomCheck()) {
+            mMeetingApiService.createMeeting(meetingToOverlap);
+        }
+        Assert.assertFalse(mMeetingApiService.getMeeting().contains(meetingToOverlap));
+    }
+
+    @Test
+    public void d_deleteMeetingWithSuccess() {
         Meeting meetingToDelete = mMeetingApiService.getMeeting().get(0);
         mMeetingApiService.deleteMeeting(meetingToDelete);
         Assert.assertFalse(mMeetingApiService.getMeeting().contains(meetingToDelete));
     }
 
     @Test
-    public void d_filterRoomWithSuccess() {
+    public void e_filterRoomWithSuccess() {
         Meeting meetingToFilter = new Meeting("Réunion 3", "11:30", "12/4/2021", "Peach", "francis@lamzone.com", 2131099865);
         b_createMeetingWithSuccess();
         mMeetingApiService.createMeeting(meetingToFilter);
@@ -53,12 +63,12 @@ public class MareuUnitTest {
         mMeetingApiService.filterRoom(roomTest);
         Assert.assertTrue(mMeetingApiService.getFilterList().contains(meetingToFilter));
         Assert.assertEquals(mMeetingApiService.getFilterList().size(), 1);
-        c_deleteMeetingWithSuccess();
-        c_deleteMeetingWithSuccess();
+        d_deleteMeetingWithSuccess();
+        d_deleteMeetingWithSuccess();
     }
 
     @Test
-    public void e_filterTimeWithSuccess() {
+    public void f_filterTimeWithSuccess() {
         Meeting meetingToFilter = new Meeting("Réunion 5", "15:15", "9/4/2021", "Luigi", "eric@lamzone.com", 2131099867);
         b_createMeetingWithSuccess();
         mMeetingApiService.createMeeting(meetingToFilter);
@@ -68,7 +78,7 @@ public class MareuUnitTest {
     }
 
     @Test
-    public void f_resetFilterWithSuccess() {
+    public void g_resetFilterWithSuccess() {
         Assert.assertEquals(mMeetingApiService.getFilterList().size(), 1);
         mMeetingApiService.resetFilter();
         List<Meeting> mMeetingsTest = mMeetingApiService.getFilterList();

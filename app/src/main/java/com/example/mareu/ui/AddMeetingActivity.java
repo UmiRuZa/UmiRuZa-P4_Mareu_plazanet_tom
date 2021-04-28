@@ -3,19 +3,24 @@ package com.example.mareu.ui;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -25,16 +30,9 @@ import com.example.mareu.R;
 import com.example.mareu.model.Meeting;
 import com.example.mareu.service.MeetingApiService;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputLayout;
-
-import android.app.TimePickerDialog;
-import android.text.InputType;
-import android.widget.EditText;
-import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Objects;
 
 
 public class AddMeetingActivity extends AppCompatActivity {
@@ -322,6 +320,7 @@ public class AddMeetingActivity extends AppCompatActivity {
     public void setMeetingInfo() {
         final MaterialButton addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("WrongConstant")
             @Override
             public void onClick(View v) {
                 Meeting meeting = new Meeting(
@@ -332,9 +331,15 @@ public class AddMeetingActivity extends AppCompatActivity {
                         guests.getText().toString(),
                         color
                 );
-                mMeetingApiService.createMeeting(meeting);
-                mMeetingApiService.resetFilter();
-                finish();
+                mMeetingApiService.setMeetingRoomTaken(room.getText().toString(), eTextTime.getText().toString(), eTextDate.getText().toString());
+
+                if (!mMeetingApiService.meetingRoomCheck()) {
+                    mMeetingApiService.createMeeting(meeting);
+                    mMeetingApiService.resetFilter();
+                    finish();
+                } else {
+                    Toast.makeText(AddMeetingActivity.this, "Une réunion est déjà prévue dans cette salle à cette date et heure", 10).show();
+                }
             }
         });
     }
