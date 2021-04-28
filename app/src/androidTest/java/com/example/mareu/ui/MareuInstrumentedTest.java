@@ -1,5 +1,7 @@
 package com.example.mareu.ui;
 
+import android.inputmethodservice.Keyboard;
+import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import androidx.test.core.app.ActivityScenario;
@@ -24,7 +26,9 @@ import org.junit.runners.MethodSorters;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.pressBack;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
@@ -56,15 +60,21 @@ public class MareuInstrumentedTest {
         onView(ViewMatchers.withId(R.id.addMeeting)).perform(click());
         onView(withId(R.id.textViewRoom)).perform(click());
         onView(withText("Réunion 3")).perform(click());
-        onView(withId(R.id.editText1)).perform(click());
+        onView(withId(R.id.editTextTime)).perform(click());
         onView(withText("OK")).perform(click());
+        onView(withId(R.id.editTextDate)).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.topicLyt)).perform(typeText("Mario"));
+        onView(withId(R.id.topicLyt)).perform(closeSoftKeyboard());
+        onView(withId(R.id.textViewGuests)).perform(click());
+        onView(withText("alexandra@lamzone.com")).perform(click());
+        onView(withId(R.id.select_button)).perform(click());
         onView(withId(R.id.addButton)).perform(click());
     }
 
     @Test
     public void A_meetingList_shouldBeEmpty() {
         onView(ViewMatchers.withId(R.id.rvMeetings)).check(matches(hasChildCount(0)));
-
     }
 
     @Test
@@ -73,10 +83,14 @@ public class MareuInstrumentedTest {
         onView(ViewMatchers.withId(R.id.addMeeting)).perform(click());
         onView(withId(R.id.textViewRoom)).perform(click());
         onView(withText("Réunion 1")).perform(click());
-        onView(withId(R.id.editText1)).perform(click());
+        onView(withId(R.id.editTextTime)).perform(click());
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(12, 30));
         onView(withText("OK")).perform(click());
-        onView(withId(R.id.topicMeeting)).perform(typeText("Peach"));
+        onView(withId(R.id.editTextDate)).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2021, 4, 6));
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.topicLyt)).perform(typeText("Peach"));
+        onView(withId(R.id.topicLyt)).perform(closeSoftKeyboard());
         onView(withId(R.id.textViewGuests)).perform(click());
         onView(withText("francis@lamzone.com")).perform(click());
         onView(withId(R.id.select_button)).perform(click());
@@ -86,7 +100,17 @@ public class MareuInstrumentedTest {
     }
 
     @Test
-    public void C_meetingList_deleteAction_shouldDeleteItem() {
+    public void C_meetingList_dialogInfo_ShouldShowMeetingInfo() {
+        onView(withId(R.id.meetingFragment)).perform(click());
+        onView(ViewMatchers.withId(R.id.dRoom)).check(matches(withText("Réunion 1")));
+        onView(ViewMatchers.withId(R.id.dDate)).check(matches(withText("6/4/2021 - 12:30")));
+        onView(ViewMatchers.withId(R.id.dTopic)).check(matches(withText("Peach")));
+        onView(ViewMatchers.withId(R.id.dGuests)).check(matches(withText("francis@lamzone.com")));
+        onView(withId(R.id.dClose)).perform(click());
+    }
+
+    @Test
+    public void D_meetingList_deleteAction_shouldDeleteItem() {
         onView(ViewMatchers.withId(R.id.rvMeetings)).check(matches(hasChildCount(1)));
         pressBack();
         onView(withId(R.id.delete_button)).perform(click());
@@ -94,7 +118,7 @@ public class MareuInstrumentedTest {
     }
 
     @Test
-    public void D_meetingList_filterMeetings_shouldReturnOnlyFilteredMeeting() {
+    public void E_meetingList_filterMeetings_shouldReturnOnlyFilteredMeeting() {
         B_meetingList_createAction_shouldCreateAndDisplayItem();
         meetingList_createAction_FilterTestMeeting();
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().getTargetContext());
@@ -106,9 +130,11 @@ public class MareuInstrumentedTest {
         onView(withText("Salle")).perform(click());
         onView(withText("Réunion 2")).perform(click());
         onView(withText("OK")).perform(click());
-        onView(ViewMatchers.withId(R.id.guests_info)).check(matches(withText("A ce filtre")));
+        onView(ViewMatchers.withId(R.id.rvMeetings)).check(matches(hasChildCount(0)));
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().getTargetContext());
         onView(withText("Horaire")).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2021, 4, 6));
+        onView(withText("OK")).perform(click());
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(12, 30));
         onView(withText("OK")).perform(click());
         onView(ViewMatchers.withId(R.id.guests_info)).check(matches(withText("francis@lamzone.com")));

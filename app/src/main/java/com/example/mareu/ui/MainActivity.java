@@ -1,6 +1,7 @@
 package com.example.mareu.ui;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -23,7 +24,9 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.DatePicker;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,11 +50,9 @@ public class MainActivity extends AppCompatActivity{
         mMeetings = mMeetingApiService.getMeeting();
         recyclerView = findViewById(R.id.rvMeetings);
 
-        addMeeting = (FloatingActionButton)findViewById(R.id.addMeeting);
+        addMeeting = findViewById(R.id.addMeeting);
 
-        FloatingActionButton addButton = (FloatingActionButton)findViewById(R.id.addMeeting);
-
-        addButton.setOnClickListener(new View.OnClickListener() {
+        addMeeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddMeetingActivity.class);
@@ -62,13 +63,20 @@ public class MainActivity extends AppCompatActivity{
         initList();
     }
 
+    @SuppressLint("WrongConstant")
     private void initList(){
         List<Meeting> mMeetingsFinal;
         List<Meeting> filterList = mMeetingApiService.getFilterList();
-        int filterSize = filterList.size();
+        boolean filterEmpty = false;
 
-        if (filterList.isEmpty()){
+        filterEmpty = mMeetingApiService.getFilterIsEmpty();
+
+        if (filterList.isEmpty() && !filterEmpty){
             mMeetingsFinal = mMeetings;
+        } else if (filterList.isEmpty() && filterEmpty){
+            mMeetingsFinal = filterList;
+            int i = 10;
+            Toast.makeText(MainActivity.this, "Aucune réunion ne correspond a votre filtre", i).show();
         } else {
             mMeetingsFinal = filterList;
         }
@@ -97,7 +105,7 @@ public class MainActivity extends AppCompatActivity{
 
         if (id == R.id.action_room) { getFilterRoom(); }
 
-        if (id == R.id.action_time){ getFilterTime(); }
+        if (id == R.id.action_time){ getFilterDate(); }
 
         if (id == R.id.action_reset){
             mMeetingApiService.resetFilter();
@@ -138,30 +146,44 @@ public class MainActivity extends AppCompatActivity{
         dialog.show();
     }
 
-    public void getFilterTime(){
+    public void getFilterDate(){
+        final String[] cldrTime = {""};
+        final String[] cldrDate = {""};
+
         final Calendar cldr = Calendar.getInstance();
+        int year = cldr.get(Calendar.YEAR);
+        int month = cldr.get(Calendar.MONTH);
+        int day = cldr.get(Calendar.DAY_OF_WEEK);
         int hour = cldr.get(Calendar.HOUR_OF_DAY);
         int minutes = cldr.get(Calendar.MINUTE);
-                // time picker dialog
-        TimePickerDialog picker = new TimePickerDialog(MainActivity.this,
-                new TimePickerDialog.OnTimeSetListener() {
-            @SuppressLint("SetTextI18n")
+
+        DatePickerDialog datePicker = new DatePickerDialog(MainActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                String calendar ="";
-                if (sHour < 10 && sMinute < 10) {
-                    calendar = ("0" + sHour + ":" + "0" + sMinute);
-                } else if (sHour < 10) {
-                    calendar = ("0" + sHour + ":" + sMinute);
-                } else if (sMinute < 10) {
-                    calendar = (sHour + ":" + "0" + sMinute);
-                } else {
-                    calendar = (sHour + ":" + sMinute);
-                }
-                mMeetingApiService.filterDate(calendar);
-                initList();
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                cldrDate[0] = (dayOfMonth + "/" + (month+1) + "/" + year);
+
+                TimePickerDialog picker = new TimePickerDialog(MainActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
+                                if (sHour < 10 && sMinute < 10) {
+                                    cldrTime[0] = ("0" + sHour + ":" + "0" + sMinute);
+                                } else if (sHour < 10) {
+                                    cldrTime[0] = ("0" + sHour + ":" + sMinute);
+                                } else if (sMinute < 10) {
+                                    cldrTime[0] = (sHour + ":" + "0" + sMinute);
+                                } else {
+                                    cldrTime[0] = (sHour + ":" + sMinute);
+                                }
+                                mMeetingApiService.filterDate(cldrDate[0], cldrTime[0]);
+                                initList();
+                            }
+                        }, hour, minutes, true);
+                picker.show();
             }
-            }, hour, minutes, true);
-        picker.show();
+        }, year, month, day);
+        datePicker.show();
     }
 }

@@ -1,17 +1,18 @@
 package com.example.mareu.ui;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,14 +34,18 @@ import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 
 public class AddMeetingActivity extends AppCompatActivity {
 
-    TimePickerDialog picker;
-    EditText eText;
+    TimePickerDialog timePicker;
+    EditText eTextTime;
 
-    TextInputLayout topic;
+    DatePickerDialog datePicker;
+    EditText eTextDate;
+
+    EditText topic;
 
     TextView room;
     Dialog dialogRoom;
@@ -52,6 +57,7 @@ public class AddMeetingActivity extends AppCompatActivity {
     ArrayList<String> guestsList = new ArrayList<>();
 
     private MeetingApiService mMeetingApiService;
+    int buttonTrigger = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +68,16 @@ public class AddMeetingActivity extends AppCompatActivity {
         getRoom();
         getGuests();
         getTime();
+        getDate();
+        getTopic();
         setMeetingInfo();
-        topic = findViewById(R.id.topicLyt);
+
         mMeetingApiService = DI.getMeetingApiService();
     }
 
     public void getRoom() {
+        final boolean[] hasRun = {false};
+
         room = findViewById(R.id.textViewRoom);
 
         room.setOnClickListener(new View.OnClickListener() {
@@ -100,9 +110,12 @@ public class AddMeetingActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         room.setText(adapter_room.getItem(position));
                         getColorTint();
-                        MaterialButton addButton = findViewById(R.id.addButton);
-                        addButton.setEnabled(room.length() > 0);
                         dialogRoom.dismiss();
+                        if (!hasRun[0]) {
+                            buttonTrigger++;
+                            setAddButton(buttonTrigger);
+                            hasRun[0] = true;
+                        }
                     }
                 });
             }
@@ -148,7 +161,98 @@ public class AddMeetingActivity extends AppCompatActivity {
         return 0;
     }
 
+    public void getTime(){
+        final boolean[] hasRun = {false};
+
+        eTextTime = (EditText) findViewById(R.id.editTextTime);
+        eTextTime.setInputType(InputType.TYPE_NULL);
+
+        eTextTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int hour = cldr.get(Calendar.HOUR_OF_DAY);
+                int minutes = cldr.get(Calendar.MINUTE);
+                // time picker dialog
+                timePicker = new TimePickerDialog(AddMeetingActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
+                                if (sHour < 10 && sMinute < 10) {
+                                    eTextTime.setText("0" + sHour + ":" + "0" + sMinute);
+                                } else if (sHour < 10) {
+                                    eTextTime.setText("0" + sHour + ":" + sMinute);
+                                } else if (sMinute < 10) {
+                                    eTextTime.setText(sHour + ":" + "0" + sMinute);
+                                } else {
+                                    eTextTime.setText(sHour + ":" + sMinute);
+                                }
+                                if (!hasRun[0]) {
+                                    buttonTrigger++;
+                                    setAddButton(buttonTrigger);
+                                    hasRun[0] = true;
+                                }
+                            }
+                        }, hour, minutes, true);
+                timePicker.show();
+            }
+        });
+    }
+
+    public void getDate() {
+        final boolean[] hasRun = {false};
+
+        eTextDate = findViewById(R.id.editTextDate);
+        eTextDate.setInputType(InputType.TYPE_NULL);
+
+        eTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar caldr = Calendar.getInstance();
+                int year = caldr.get(Calendar.YEAR);
+                int month = caldr.get(Calendar.MONTH);
+                int day = caldr.get(Calendar.DAY_OF_WEEK);
+                datePicker = new DatePickerDialog(AddMeetingActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        eTextDate.setText(dayOfMonth + "/" + (month+1) + "/" + year);
+                        if (!hasRun[0]) {
+                            buttonTrigger++;
+                            setAddButton(buttonTrigger);
+                            hasRun[0] = true;
+                        }
+                    }
+                }, year, month, day);
+                datePicker.show();
+            }
+        });
+    }
+
+    private void getTopic() {
+        final boolean[] hasRun = {false};
+
+        topic = findViewById(R.id.topicLyt);
+
+        topic.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!hasRun[0]) {
+                    buttonTrigger++;
+                    setAddButton(buttonTrigger);
+                    hasRun[0] = true;
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+    }
+
     public void getGuests() {
+        final boolean[] hasRun = {false};
+
         guests = findViewById(R.id.textViewGuests);
 
         guests.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +265,7 @@ public class AddMeetingActivity extends AppCompatActivity {
 
                 EditText editTextGuests = dialogGuests.findViewById(R.id.edit_text_guests);
                 ListView listViewGuests = dialogGuests.findViewById(R.id.list_view_guests);
-                Button guestsButton = dialogGuests.findViewById(R.id.select_button);
+                Button selectButton = dialogGuests.findViewById(R.id.select_button);
 
                 ArrayAdapter<CharSequence> adapter_guests = ArrayAdapter.createFromResource(AddMeetingActivity.this,
                         R.array.guests_array, android.R.layout.simple_list_item_multiple_choice);
@@ -185,11 +289,16 @@ public class AddMeetingActivity extends AppCompatActivity {
                     }
                 });
 
-                guestsButton.setOnClickListener(new View.OnClickListener() {
+                selectButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getGuestText();
                         dialogGuests.dismiss();
+                        if (!hasRun[0]) {
+                            buttonTrigger++;
+                            setAddButton(buttonTrigger);
+                            hasRun[0] = true;
+                        }
                     }
                 });
             }
@@ -205,36 +314,9 @@ public class AddMeetingActivity extends AppCompatActivity {
         guests.setText(guestsText);
     }
 
-    public void getTime(){
-        eText = (EditText) findViewById(R.id.editText1);
-        eText.setInputType(InputType.TYPE_NULL);
-
-        eText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar cldr = Calendar.getInstance();
-                int hour = cldr.get(Calendar.HOUR_OF_DAY);
-                int minutes = cldr.get(Calendar.MINUTE);
-                // time picker dialog
-                picker = new TimePickerDialog(AddMeetingActivity.this,
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @SuppressLint("SetTextI18n")
-                            @Override
-                            public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                if (sHour < 10 && sMinute < 10) {
-                                    eText.setText("0" + sHour + ":" + "0" + sMinute);
-                                } else if (sHour < 10) {
-                                    eText.setText("0" + sHour + ":" + sMinute);
-                                } else if (sMinute < 10) {
-                                    eText.setText(sHour + ":" + "0" + sMinute);
-                                } else {
-                                    eText.setText(sHour + ":" + sMinute);
-                                }
-                            }
-                        }, hour, minutes, true);
-                picker.show();
-            }
-        });
+    private void setAddButton(int buttonTrigger) {
+        MaterialButton addButton = findViewById(R.id.addButton);
+        addButton.setEnabled(buttonTrigger == 5);
     }
 
     public void setMeetingInfo() {
@@ -244,12 +326,14 @@ public class AddMeetingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Meeting meeting = new Meeting(
                         room.getText().toString(),
-                        eText.getText().toString(),
-                        topic.getEditText().getText().toString(),
+                        eTextTime.getText().toString(),
+                        eTextDate.getText().toString(),
+                        topic.getText().toString(),
                         guests.getText().toString(),
                         color
                 );
                 mMeetingApiService.createMeeting(meeting);
+                mMeetingApiService.resetFilter();
                 finish();
             }
         });

@@ -22,5 +22,7 @@ public interface MeetingApiService {
 
     void filterRoom(ArrayList<String> rooms);
 
-    void filterDate(String s);
+    void filterDate(String date, String time);
+
+    Boolean getFilterIsEmpty();
 }

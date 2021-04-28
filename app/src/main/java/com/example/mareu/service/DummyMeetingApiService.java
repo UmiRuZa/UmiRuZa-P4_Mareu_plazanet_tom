@@ -1,6 +1,5 @@
 package com.example.mareu.service;
 
-import com.example.mareu.R;
 import com.example.mareu.model.Meeting;
 
 import java.util.ArrayList;
@@ -12,6 +11,8 @@ public class DummyMeetingApiService implements MeetingApiService{
     private final List<Meeting> mMeetings = DummyMeetingGenerator.getMeetings_list();
 
     List<Meeting> filterList = new ArrayList<>();
+
+    boolean filterEmpty;
 
     @Override
     public List<Meeting> getMeeting() {
@@ -36,6 +37,7 @@ public class DummyMeetingApiService implements MeetingApiService{
     @Override
     public void resetFilter() {
         filterList = new ArrayList<>();
+        filterEmpty = false;
     }
 
     @Override
@@ -53,26 +55,29 @@ public class DummyMeetingApiService implements MeetingApiService{
                 }
             }
         }
-        if (resultList.isEmpty()) {
-            Meeting meetingNull = new Meeting("Aucune", "Réunion", "Correspondante", "A ce filtre", R.color.Filtre_vide);
-            resultList.add(meetingNull);
-        }
+        filterIsEmpty();
         filterList = resultList;
     }
 
     @Override
-    public void filterDate(String s) {
+    public void filterDate(String date, String time) {
         filterList = new ArrayList<>();
         ArrayList<Meeting> resultListDate = new ArrayList<>();
         for (Meeting meeting : mMeetings) {
-            if (s.equalsIgnoreCase(meeting.getTime())) {
+            if (time.equalsIgnoreCase(meeting.getTime()) && date.equalsIgnoreCase(meeting.getDate())) {
                 resultListDate.add(meeting);
             }
         }
-        if (resultListDate.isEmpty()) {
-            Meeting meetingNull = new Meeting("Aucune", "Réunion", "Correspondante", "A ce filtre", R.color.Filtre_vide);
-            resultListDate.add(meetingNull);
-        }
+        filterIsEmpty();
         filterList = resultListDate;
     }
+
+    public void filterIsEmpty() {
+        List<Meeting> filterIsEmpty = getFilterList();
+
+        filterEmpty = filterIsEmpty.isEmpty();
+    }
+
+    @Override
+    public Boolean getFilterIsEmpty() { return filterEmpty; }
 }

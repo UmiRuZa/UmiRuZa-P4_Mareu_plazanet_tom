@@ -21,54 +21,55 @@ public class MareuUnitTest {
     @Before
     public void setup() {
         mMeetingApiService = DI.getMeetingApiService();
-        Meeting meeting = new Meeting("Réunion 1", "09:30", "Mario", "alexandra@lamzone.com", 2131099862);
-        mMeetingApiService.createMeeting(meeting);
     }
 
     @Test
-    public void a_getMeetingWithSuccess() {
+    public void a_getMeetingEmptyWithSuccess() {
         List<Meeting> mMeetings = mMeetingApiService.getMeeting();
-        Assert.assertEquals(mMeetings.size(), 1);
+        Assert.assertEquals(mMeetings.size(), 0);
     }
 
     @Test
-    public void b_deleteMeetingWithSuccess() {
+    public void b_createMeetingWithSuccess() {
+        Meeting meetingToCreate = new Meeting("Réunion 1", "09:30", "6/4/2021", "Mario", "alexandra@lamzone.com", 2131099862);
+        mMeetingApiService.createMeeting(meetingToCreate);
+        Assert.assertTrue(mMeetingApiService.getMeeting().contains(meetingToCreate));
+    }
+
+    @Test
+    public void c_deleteMeetingWithSuccess() {
         Meeting meetingToDelete = mMeetingApiService.getMeeting().get(0);
         mMeetingApiService.deleteMeeting(meetingToDelete);
         Assert.assertFalse(mMeetingApiService.getMeeting().contains(meetingToDelete));
     }
 
     @Test
-    public void c_createMeetingWithSuccess() {
-        Meeting meetingToCreate = mMeetingApiService.getMeeting().get(0);
-        mMeetingApiService.createMeeting(meetingToCreate);
-        Assert.assertTrue(mMeetingApiService.getMeeting().contains(meetingToCreate));
-    }
-
-    @Test
     public void d_filterRoomWithSuccess() {
-        Meeting meetingToFilter = new Meeting("Réunion 3", "11:30", "Peach", "francis@lamzone.com", 2131099865);
-        Meeting meetingTestFiltering = mMeetingApiService.getMeeting().get(0);
+        Meeting meetingToFilter = new Meeting("Réunion 3", "11:30", "12/4/2021", "Peach", "francis@lamzone.com", 2131099865);
+        b_createMeetingWithSuccess();
         mMeetingApiService.createMeeting(meetingToFilter);
         ArrayList<String> roomTest = new ArrayList<>();
         roomTest.add("Réunion 3");
         mMeetingApiService.filterRoom(roomTest);
         Assert.assertTrue(mMeetingApiService.getFilterList().contains(meetingToFilter));
         Assert.assertEquals(mMeetingApiService.getFilterList().size(), 1);
+        c_deleteMeetingWithSuccess();
+        c_deleteMeetingWithSuccess();
     }
 
     @Test
     public void e_filterTimeWithSuccess() {
-        Meeting meetingToFilter = new Meeting("Réunion 5", "15:15", "Luigi", "eric@lamzone.com", 2131099867);
-        Meeting meetingTestFiltering = mMeetingApiService.getMeeting().get(0);
+        Meeting meetingToFilter = new Meeting("Réunion 5", "15:15", "9/4/2021", "Luigi", "eric@lamzone.com", 2131099867);
+        b_createMeetingWithSuccess();
         mMeetingApiService.createMeeting(meetingToFilter);
-        mMeetingApiService.filterDate("15:15");
+        mMeetingApiService.filterDate("9/4/2021", "15:15");
         Assert.assertTrue(mMeetingApiService.getFilterList().contains(meetingToFilter));
         Assert.assertEquals(mMeetingApiService.getFilterList().size(), 1);
     }
 
     @Test
     public void f_resetFilterWithSuccess() {
+        Assert.assertEquals(mMeetingApiService.getFilterList().size(), 1);
         mMeetingApiService.resetFilter();
         List<Meeting> mMeetingsTest = mMeetingApiService.getFilterList();
         Assert.assertEquals(mMeetingsTest.size(), 0);
